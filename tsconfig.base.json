@@ -1,0 +1,48 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@express-rest-service/database-abstraction/repositories": [
+        "libs/database-abstraction/src/repositories/index.ts"
+      ],
+      "@express-rest-service/database-abstraction/interfaces": [
+        "libs/database-abstraction/src/interfaces/index.ts"
+      ],
+      "@express-rest-service/database-abstraction/data-mappers": [
+        "libs/database-abstraction/src/data-mappers/index.ts"
+      ],
+      "@express-rest-service/database-abstraction/entities": [
+        "libs/database-abstraction/src/entities/index.ts"
+      ],
+      "@express-rest-service/domain/entities": [
+        "libs/domain/src/entities/index.ts"
+      ],
+      "@express-rest-service/domain/interfaces": [
+        "libs/domain/src/interfaces/index.ts"
+      ],
+      "@express-rest-service/domain/services": [
+        "libs/domain/src/services/index.ts"
+      ],
+      "@express-rest-service/utils": ["libs/utils/src/index.ts"],
+      "@express-rest-service/api/controllers": [
+        "libs/api/src/controllers/index.ts"
+      ],
+      "@express-rest-service/api/resources": ["libs/api/src/resources/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}
