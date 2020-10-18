@@ -28,18 +28,6 @@
     },
     "caesar-cipher-cli-tool": {
       "tags": []
-    },
-    "database-abstraction": {
-      "tags": []
-    },
-    "domain": {
-      "tags": []
-    },
-    "utils": {
-      "tags": []
-    },
-    "api": {
-      "tags": []
     }
   }
 }

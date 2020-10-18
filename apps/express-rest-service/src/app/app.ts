@@ -1,4 +1,7 @@
-import { boardRouter, taskRouter, userRouter } from '@express-rest-service/api/resources';
+import { boardRouter } from '@express-rest-service/boards';
+import { ILogger, loggerMiddleware } from '@express-rest-service/shared';
+import { taskRouter } from '@express-rest-service/tasks';
+import { userRouter } from '@express-rest-service/users';
 import { mapDomainErrorToHttpResponse } from '@express-rest-service/utils';
 import * as express from 'express';
 import { Server } from 'net';
@@ -11,10 +14,14 @@ export class App {
   private app = express();
   private server: Server;
 
-  constructor() {
+  constructor(private logger: ILogger) {
     this.app.use(express.json());
 
-    process.on('unhandledRejection', (reason: string) => console.error('Error:', reason));
+    process.on('unhandledRejection', (reason: string) => logger.error(reason));
+    process.on('uncaughtException', (error: Error) => {
+      logger.error('Error:', error.message);
+      process.exit(1);
+    });
   }
 
   public async start(): Promise<Server> {
@@ -27,6 +34,8 @@ export class App {
       }
       next();
     });
+
+    this.app.use(loggerMiddleware(this.logger));
 
     this.app.use('/users', userRouter);
     this.app.use('/boards', boardRouter);

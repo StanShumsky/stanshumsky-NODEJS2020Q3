@@ -1,9 +1,11 @@
+import { ConsoleLogger, Logger } from '@express-rest-service/shared';
 import { App } from './app/app';
 import { environment } from './environments/environment';
 
-const app = new App();
+const logger = new Logger(Number(environment.LOGGER_LEVEL), [new ConsoleLogger()]);
+const app = new App(logger);
 
 app
   .start()
-  .then(() => console.log(`App is running on http://localhost:${environment.PORT}`))
-  .catch((error: Error) => console.error('Error:', error.message));
+  .then(() => logger.info(`App is running on http://localhost:${environment.PORT}`))
+  .catch((error: Error) => logger.error('Error:', error.message));
