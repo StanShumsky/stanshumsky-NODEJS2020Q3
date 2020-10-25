@@ -2,9 +2,10 @@ import { IRepository } from '@express-rest-service/shared';
 import { Task } from '../task';
 
 export interface ITaskRepository extends IRepository<Task> {
-  findByBoard(boardId: string): Promise<Task[]>;
-  findByUser(userId: string): Promise<Task[]>;
-  deleteByBoard(boardId: string): Promise<boolean>;
+  findTasks(boardId: string): Promise<Task[]>;
+  findOneTask(boardId: string, taskId: string): Promise<Task>;
+  updateTask(boardId: string, taskId: string, task: Task): Promise<Task>;
+  deleteTask(boardId: string, taskId: string): Promise<boolean>;
+  deleteTasksByBoard(boardId: string): Promise<boolean>;
   unassignUser(userId: string): Promise<boolean>;
-  findOneByBord(boardId: string, taskId: string): Promise<Task>;
 }

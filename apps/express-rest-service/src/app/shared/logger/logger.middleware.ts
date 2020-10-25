@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { ILog, ILogger } from './logger.interfaces';
 
 export function loggerMiddleware(logger: ILogger): RequestHandler {

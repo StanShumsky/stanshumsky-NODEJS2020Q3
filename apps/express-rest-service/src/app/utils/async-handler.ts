@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 
 export function asyncHandler() {
   return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {

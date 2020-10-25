@@ -3,18 +3,14 @@ import { ITaskService } from './interfaces/task-service.interface';
 import { Task } from './task';
 
 export class TaskService implements ITaskService {
-  private taskRepository: ITaskRepository;
-
-  constructor(taskRepository: ITaskRepository) {
-    this.taskRepository = taskRepository;
-  }
+  constructor(private taskRepository: ITaskRepository) {}
 
   public async find(boardId: string): Promise<Task[]> {
-    return this.taskRepository.findByBoard(boardId);
+    return this.taskRepository.findTasks(boardId);
   }
 
   public async findOne(boardId: string, taskId: string): Promise<Task> {
-    return this.taskRepository.findOneByBord(boardId, taskId);
+    return this.taskRepository.findOneTask(boardId, taskId);
   }
 
   public async create(boardId: string, body: Partial<Task>): Promise<Task> {
@@ -24,12 +20,10 @@ export class TaskService implements ITaskService {
 
   public async update(boardId: string, taskId: string, body: Partial<Task>): Promise<Task> {
     const task = new Task({ ...body, id: taskId, boardId });
-    await this.taskRepository.findOneByBord(boardId, taskId);
-    return this.taskRepository.update(task);
+    return this.taskRepository.updateTask(boardId, taskId, task);
   }
 
   public async delete(boardId: string, taskId: string): Promise<void> {
-    await this.taskRepository.findOneByBord(boardId, taskId);
-    await this.taskRepository.delete(taskId);
+    await this.taskRepository.deleteTask(boardId, taskId);
   }
 }

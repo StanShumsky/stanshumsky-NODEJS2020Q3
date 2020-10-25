@@ -1,13 +1,23 @@
-export class Task {
-  readonly id: string;
-  readonly title: string;
-  readonly order: number;
-  readonly description: string;
-  readonly userId: string;
-  readonly boardId: string;
-  readonly columnId: string;
+import { ITaskEntity } from './dal/task.entity';
 
-  constructor({ id = null, title = '', order = 0, description = '', userId = '', boardId = '', columnId = '' } = {}) {
+export class Task {
+  readonly id: ITaskEntity['_id'];
+  readonly title: ITaskEntity['title'];
+  readonly order: ITaskEntity['order'];
+  readonly description: ITaskEntity['description'];
+  readonly userId: ITaskEntity['userId'];
+  readonly boardId: ITaskEntity['boardId'];
+  readonly columnId: ITaskEntity['columnId'];
+
+  constructor({
+    id = undefined,
+    title = '',
+    order = 0,
+    description = '',
+    userId = '',
+    boardId = '',
+    columnId = '',
+  } = {}) {
     this.id = id;
     this.title = title;
     this.order = order;

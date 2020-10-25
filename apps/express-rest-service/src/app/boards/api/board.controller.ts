@@ -4,11 +4,7 @@ import { Board } from '../board';
 import { IBoardService } from '../interfaces/board-service.interface';
 
 export class BoardController {
-  private boardService: IBoardService;
-
-  constructor(boardService: IBoardService) {
-    this.boardService = boardService;
-  }
+  constructor(private boardService: IBoardService) {}
 
   @asyncHandler()
   public async find(req: Request, res: Response): Promise<void> {

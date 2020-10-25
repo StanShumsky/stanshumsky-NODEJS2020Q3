@@ -1,45 +1,66 @@
-import { GenericRepository, InMemoryRepository, EntityNotFoundError } from '@express-rest-service/shared';
+import { EntityNotFoundError, GenericRepository, IEntityDataMapper } from '@express-rest-service/shared';
+import { Collection, Types } from 'mongoose';
 import { ITaskRepository } from '../interfaces/task-repository.interface';
 import { Task } from '../task';
 import { TaskDataMapper } from './task-data-mapper';
-import { TaskEntity } from './task.entity';
+import { ITaskEntity, TaskEntity } from './task.entity';
+const { ObjectId } = Types;
 
-export class TaskRepository extends GenericRepository<Task, TaskEntity> implements ITaskRepository {
-  constructor() {
-    super(new InMemoryRepository<TaskEntity>('Task'), new TaskDataMapper());
+export class TaskRepository extends GenericRepository<Task, ITaskEntity> implements ITaskRepository {
+  constructor(repository: Collection, dataMapper: IEntityDataMapper<Task, ITaskEntity>) {
+    super(repository, dataMapper);
   }
 
-  public async findByBoard(boardId: string): Promise<Task[]> {
-    const tasks = await this.repository.find();
-    const entities = tasks.filter((task) => task.boardId === boardId);
+  public async findTasks(boardId: string): Promise<Task[]> {
+    const entities = await this.repository.find({ boardId: new ObjectId(boardId) }).toArray();
     return entities.map((entity) => this.dataMapper.toDomain(entity));
   }
 
-  public async findByUser(userId: string): Promise<Task[]> {
-    const tasks = await this.repository.find();
-    const entities = tasks.filter((task) => task.userId === userId);
-    return entities.map((entity) => this.dataMapper.toDomain(entity));
-  }
-
-  public async findOneByBord(boardId: string, taskId: string): Promise<Task> {
-    const entity = await this.repository.findOne(taskId);
-    if (entity.boardId === boardId) {
+  public async findOneTask(boardId: string, taskId: string): Promise<Task> {
+    const entity = await this.repository.findOne({
+      _id: new ObjectId(taskId),
+      boardId: new ObjectId(boardId),
+    });
+    if (entity) {
       return this.dataMapper.toDomain(entity);
     }
-    throw new EntityNotFoundError('Task', { taskId, boardId });
+    throw new EntityNotFoundError(this.repository.name, { taskId, boardId });
   }
 
-  public async deleteByBoard(boardId: string): Promise<boolean> {
-    const entities = await this.findByBoard(boardId);
-    await Promise.all(entities.map((entity) => this.repository.delete(entity.id)));
-    return entities.length > 0;
+  public async updateTask(boardId: string, taskId: string, task: Task): Promise<Task> {
+    const entity = this.dataMapper.toEntity(task);
+    await this.repository.replaceOne(
+      {
+        boardId: new ObjectId(boardId),
+        _id: new ObjectId(taskId),
+      },
+      entity.toObject()
+    );
+    if (entity) {
+      return this.dataMapper.toDomain(entity.toObject());
+    }
+    throw new EntityNotFoundError(this.repository.name, { taskId, boardId });
+  }
+
+  public async deleteTask(boardId: string, taskId: string): Promise<boolean> {
+    const { result } = await this.repository.deleteOne({
+      boardId: new ObjectId(boardId),
+      _id: new ObjectId(taskId),
+    });
+    return result.ok > 0;
+  }
+
+  public async deleteTasksByBoard(boardId: string): Promise<boolean> {
+    const { result } = await this.repository.deleteMany({
+      boardId: new ObjectId(boardId),
+    });
+    return result.ok > 0;
   }
 
   public async unassignUser(userId: string): Promise<boolean> {
-    const entities = await this.findByUser(userId);
-    await Promise.all(entities.map((entity) => this.repository.update({ ...entity, userId: null })));
-    return entities.length > 0;
+    const { result } = await this.repository.updateMany({ userId: new ObjectId(userId) }, { $set: { userId: null } });
+    return result.ok > 0;
   }
 }
 
-export const taskRepository = new TaskRepository();
+export const taskRepository = new TaskRepository(TaskEntity.collection, new TaskDataMapper());

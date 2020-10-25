@@ -4,11 +4,7 @@ import { IUserService } from '../interfaces/user-service.interface';
 import { User } from '../user';
 
 export class UserController {
-  private userService: IUserService;
-
-  constructor(userService: IUserService) {
-    this.userService = userService;
-  }
+  constructor(private userService: IUserService) {}
 
   @asyncHandler()
   public async find(req: Request, res: Response): Promise<void> {

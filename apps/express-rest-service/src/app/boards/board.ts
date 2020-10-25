@@ -1,9 +1,11 @@
+import { IBoardEntity } from './dal/board.entity';
+
 export class Board {
-  readonly id: string;
-  readonly title: string;
+  readonly id: IBoardEntity['_id'];
+  readonly title: IBoardEntity['title'];
   readonly columns: { id: string; title: string; order: number }[];
 
-  constructor({ id = null, title = '', columns = [] } = {}) {
+  constructor({ id = undefined, title = '', columns = [] } = {}) {
     this.id = id;
     this.title = title;
     this.columns = columns;

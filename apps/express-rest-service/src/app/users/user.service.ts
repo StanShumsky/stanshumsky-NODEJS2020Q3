@@ -4,13 +4,7 @@ import { IUserService } from './interfaces/user-service.interface';
 import { User } from './user';
 
 export class UserService implements IUserService {
-  private userRepository: IUserRepository;
-  private taskRepository: ITaskRepository;
-
-  constructor(userRepository: IUserRepository, taskRepository: ITaskRepository) {
-    this.userRepository = userRepository;
-    this.taskRepository = taskRepository;
-  }
+  constructor(private userRepository: IUserRepository, private taskRepository: ITaskRepository) {}
 
   public async find(): Promise<User[]> {
     return this.userRepository.find();
@@ -27,7 +21,7 @@ export class UserService implements IUserService {
 
   public async update(userId: string, body: Partial<User>): Promise<User> {
     const user = new User({ ...body, id: userId });
-    return this.userRepository.update(user);
+    return this.userRepository.update(userId, user);
   }
 
   public async delete(userId: string): Promise<void> {

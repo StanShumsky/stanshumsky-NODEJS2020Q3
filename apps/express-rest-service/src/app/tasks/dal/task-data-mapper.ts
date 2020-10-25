@@ -1,13 +1,13 @@
-import { Task } from '../task';
-import { TaskEntity } from './task.entity';
 import { IEntityDataMapper } from '@express-rest-service/shared';
+import { Task } from '../task';
+import { ITaskEntity, TaskEntity } from './task.entity';
 
-export class TaskDataMapper implements IEntityDataMapper<Task, TaskEntity> {
-  public toDomain(entity: TaskEntity): Task {
-    return new Task(entity);
+export class TaskDataMapper implements IEntityDataMapper<Task, ITaskEntity> {
+  public toDomain(entity: ITaskEntity): Task {
+    return new Task({ id: entity._id, ...entity });
   }
 
-  public toEntity(model: Task): TaskEntity {
-    return { ...model };
+  public toEntity(task: Task): ITaskEntity {
+    return TaskEntity.hydrate({ _id: task.id, ...task });
   }
 }

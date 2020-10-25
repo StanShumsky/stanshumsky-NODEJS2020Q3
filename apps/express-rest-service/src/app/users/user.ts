@@ -1,10 +1,12 @@
-export class User {
-  readonly id: string;
-  readonly name: string;
-  readonly login: string;
-  readonly password: string;
+import { IUserEntity } from './dal/user.entity';
 
-  constructor({ id = null, name = '', login = '', password = '' } = {}) {
+export class User {
+  readonly id: IUserEntity['_id'];
+  readonly name: IUserEntity['name'];
+  readonly login: IUserEntity['login'];
+  readonly password: IUserEntity['password'];
+
+  constructor({ id = undefined, name = '', login = '', password = '' } = {}) {
     this.id = id;
     this.name = name;
     this.login = login;

@@ -4,11 +4,7 @@ import { ITaskService } from '../interfaces/task-service.interface';
 import { Task } from '../task';
 
 export class TaskController {
-  private taskService: ITaskService;
-
-  constructor(taskService: ITaskService) {
-    this.taskService = taskService;
-  }
+  constructor(private taskService: ITaskService) {}
 
   @asyncHandler()
   public async find(req: Request, res: Response): Promise<void> {

@@ -4,6 +4,7 @@ import { taskRouter } from '@express-rest-service/tasks';
 import { userRouter } from '@express-rest-service/users';
 import { mapDomainErrorToHttpResponse } from '@express-rest-service/utils';
 import * as express from 'express';
+import { connect as mongooseConnect, connection as mongooseConnection, Connection, Mongoose } from 'mongoose';
 import { Server } from 'net';
 import { join } from 'path';
 import * as swagger from 'swagger-ui-express';
@@ -13,6 +14,7 @@ import { environment } from '../environments/environment';
 export class App {
   private app = express();
   private server: Server;
+  private mongoose: Mongoose;
 
   constructor(private logger: ILogger) {
     this.app.use(express.json());
@@ -46,5 +48,41 @@ export class App {
     this.server = this.app.listen(environment.PORT);
 
     return this.server;
+  }
+
+  public async connect(connectionString: string): Promise<Connection> {
+    if (this.mongoose) {
+      return this.mongoose.connection;
+    }
+
+    mongooseConnection.on('connected', () => {
+      this.logger.info('mongodb running at:', connectionString);
+    });
+    mongooseConnection.on('error', (error: Error) => {
+      this.logger.info('mongodb error', error);
+      process.exit(1);
+    });
+    mongooseConnection.on('disconnected', () => {
+      this.logger.info('mongodb disconnected!');
+    });
+    mongooseConnection.on('reconnected', () => {
+      this.logger.info('mongodb has reconnected!');
+    });
+
+    this.mongoose = await mongooseConnect(connectionString, {
+      useNewUrlParser: true,
+      useFindAndModify: true,
+      useUnifiedTopology: true,
+      useCreateIndex: true,
+    });
+
+    process.on('SIGINT', () => {
+      mongooseConnection.close(() => {
+        this.logger.info('mongodb disconnected through app termination!');
+        process.exit(0);
+      });
+    });
+
+    return this.mongoose.connection;
   }
 }
