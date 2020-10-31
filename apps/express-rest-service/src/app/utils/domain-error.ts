@@ -1,4 +1,10 @@
-import { DomainError, EntityNotFoundError, InternalError } from '@express-rest-service/shared';
+import {
+  DomainError,
+  EntityNotFoundError,
+  ForbiddenError,
+  InternalError,
+  UnauthorizedError,
+} from '@express-rest-service/shared';
 import { NextFunction, Request, Response } from 'express';
 
 export function mapDomainErrorToHttpResponse(
@@ -19,6 +25,16 @@ export function mapDomainErrorToHttpResponse(
 
     if (error instanceof InternalError) {
       response.status(500).send({ message: error.message, error: error.meta });
+      return next();
+    }
+
+    if (error instanceof UnauthorizedError) {
+      response.status(401).send({ message: error.message });
+      return next();
+    }
+
+    if (error instanceof ForbiddenError) {
+      response.status(403).send({ message: error.message });
       return next();
     }
   }

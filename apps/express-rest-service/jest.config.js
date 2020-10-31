@@ -12,6 +12,5 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/apps/express-rest-service',
   setupFilesAfterEnv: ['./test/setup.js'],
-  testMatch: ['<rootDir>/test/e2e/test/*.test.js'],
   noStackTrace: true,
 };

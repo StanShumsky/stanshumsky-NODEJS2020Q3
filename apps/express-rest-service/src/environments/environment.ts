@@ -1,4 +1,3 @@
-import { atob } from '@express-rest-service/utils';
 import { config } from 'dotenv';
 import { join } from 'path';
 
@@ -8,7 +7,8 @@ export const environment = {
   PORT: process.env.PORT,
   NODE_ENV: process.env.NODE_ENV,
   LOGGER_LEVEL: process.env.LOGGER_LEVEL,
-  MONGO_CONNECTION_STRING: atob(process.env.MONGO_CONNECTION_STRING),
+  MONGO_CONNECTION_STRING: process.env.MONGO_CONNECTION_STRING,
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY,
   AUTH_MODE: process.env.AUTH_MODE === 'true',
+  SALT_WORK_FACTOR: 10,
 };

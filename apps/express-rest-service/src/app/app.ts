@@ -1,15 +1,16 @@
+import { authMiddleware, authRouter } from '@express-rest-service/auth';
 import { boardRouter } from '@express-rest-service/boards';
+import { environment } from '@express-rest-service/environment';
 import { ILogger, loggerMiddleware } from '@express-rest-service/shared';
 import { taskRouter } from '@express-rest-service/tasks';
-import { userRouter } from '@express-rest-service/users';
+import { userRouter, userService } from '@express-rest-service/users';
 import { mapDomainErrorToHttpResponse } from '@express-rest-service/utils';
 import * as express from 'express';
-import { connect as mongooseConnect, connection as mongooseConnection, Connection, Mongoose } from 'mongoose';
+import { connect as mongooseConnect, Connection, connection as mongooseConnection, Mongoose } from 'mongoose';
 import { Server } from 'net';
 import { join } from 'path';
 import * as swagger from 'swagger-ui-express';
 import * as yaml from 'yamljs';
-import { environment } from '../environments/environment';
 
 export class App {
   private app = express();
@@ -39,6 +40,10 @@ export class App {
 
     this.app.use(loggerMiddleware(this.logger));
 
+    this.app.use('/login', authRouter);
+
+    this.app.use(authMiddleware);
+
     this.app.use('/users', userRouter);
     this.app.use('/boards', boardRouter);
     boardRouter.use('/:boardId/tasks', taskRouter);
@@ -57,6 +62,9 @@ export class App {
 
     mongooseConnection.on('connected', () => {
       this.logger.info('mongodb running at:', connectionString);
+    });
+    mongooseConnection.on('open', async () => {
+      await userService.createFixtureAdmin();
     });
     mongooseConnection.on('error', (error: Error) => {
       this.logger.info('mongodb error', error);

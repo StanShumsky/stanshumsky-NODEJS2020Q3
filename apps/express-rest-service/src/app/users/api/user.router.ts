@@ -1,11 +1,8 @@
-import { taskRepository } from '@express-rest-service/tasks';
 import { Router } from 'express';
-import { userRepository } from '../dal/user.repository';
-import { UserService } from '../user.service';
+import { userService } from '../user.service';
 import { UserController } from './user.controller';
 
 const router = Router();
-const userService = new UserService(userRepository, taskRepository);
 const controller = new UserController(userService);
 
 router.route('/').get(controller.find).post(controller.create);

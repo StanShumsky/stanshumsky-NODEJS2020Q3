@@ -6,6 +6,18 @@ export class DomainError extends Error {
   }
 }
 
+export class UnauthorizedError extends DomainError {
+  constructor() {
+    super('Not Authorized.');
+  }
+}
+
+export class ForbiddenError extends DomainError {
+  constructor() {
+    super('Forbidden.');
+  }
+}
+
 export class EntityNotFoundError extends DomainError {
   public meta: { resource: string; query: unknown };
 

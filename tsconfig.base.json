@@ -16,11 +16,13 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@express-rest-service/environment": ["apps/express-rest-service/src/environments/environment.ts"],
       "@express-rest-service/utils": ["apps/express-rest-service/src/app/utils/index.ts"],
       "@express-rest-service/users": ["apps/express-rest-service/src/app/users/index.ts"],
       "@express-rest-service/tasks": ["apps/express-rest-service/src/app/tasks/index.ts"],
       "@express-rest-service/boards": ["apps/express-rest-service/src/app/boards/index.ts"],
-      "@express-rest-service/shared": ["apps/express-rest-service/src/app/shared/index.ts"]
+      "@express-rest-service/shared": ["apps/express-rest-service/src/app/shared/index.ts"],
+      "@express-rest-service/auth": ["apps/express-rest-service/src/app/auth/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
